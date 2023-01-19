@@ -1,0 +1,12 @@
+.home-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-text {
+    margin-top: 10rem;
+    font-family: monospace;
+    font-size: 45px;
+    font-weight: 550;
+}

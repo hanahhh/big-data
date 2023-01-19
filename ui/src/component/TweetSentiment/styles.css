@@ -1,0 +1,32 @@
+.tweet-sentiment-view {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    width: 100%;
+}
+
+.symbol-select {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.symbol-btn {
+    margin-left: 1rem;
+}
+
+.tweet-sentiment-title {
+    text-align: center;
+    font-size: 2rem;
+    margin: 2rem 0;
+}
+
+.frequency-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.frequency-btn {
+    margin-left: 1rem;
+}

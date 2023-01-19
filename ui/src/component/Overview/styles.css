@@ -1,0 +1,49 @@
+.overview {
+    display: flex;
+}
+
+.tweet-table {
+    width: 50%;
+    margin-left: 1rem;
+}
+
+.custom-tooltip {
+    background-color: #fff;
+    padding: 0.5rem 0.5rem;
+    border: 1px solid #000;
+    border-radius: 4px;
+}
+
+.tooltip-label {
+    margin-bottom: 0.5rem;
+}
+
+.tooltip-value {
+    margin-bottom: 0.5rem;
+}
+
+.chart-view {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+}
+
+.chart-title {
+    text-align: center;
+    font-size: large;
+    font-weight: 600;
+    margin-top: 2rem;
+}
+
+.tweet-group {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    display: block;
+    padding: 1rem;
+    margin-bottom: 0.2rem;
+}
+
+.tweet-value {
+    word-break: break-word;
+}
