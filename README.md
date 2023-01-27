@@ -29,3 +29,17 @@
    > python kafka/producer/app.py
 2. Run file consumer
    > python kafka/consumer/app.py
+
+3. Run spark
+   ``` copy file spark.py to spark-master, run this ```
+   >
+   > docker cp spark/spark.py spark-master:/home/
+   >
+   >
+   >spark/bin/spark-submit --conf spark.cassandra.connection.host=172.18.0.12 --packages com.datastax.spark:spark-cassandra-connector_2.12:3.2.0 --conf spark.cassandra.auth.username=cassandra --conf spark.cassandra.auth.password=cassandra --master spark-master:7077 home/spark.py
+   >
+   ``` cassandra host, copy ip cassandra below ```
+   >
+   > docker network inspect big-data_es-net
+   >
+   

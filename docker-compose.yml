@@ -200,65 +200,46 @@ services:
     - ../storage/hadoop/datanode-3:/hadoop/dfs/data
     networks:
       - es-net
-  resourcemanager:
-    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
-    container_name: resourcemanager
-    hostname: resourcemanager
+  cassandra:
+    image: cassandra:4.0.5
+    container_name: cassandra
+    hostname: cassandra
+    env_file:
+      - ./cassandra/cassandra.env
     ports:
-      - 8088:8088
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864"
-    env_file:
-      - ./hadoop/hadoop.env
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - node.hostname == akswnc4.aksw.uni-leipzig.de
-    healthcheck:
-      disable: true
-    networks:
-      - es-net
-
-  nodemanager:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
-    container_name: nodemanager
-    hostname: nodemanager
-    ports:
-      - 8042:8042
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864 resourcemanager:8088"
-    env_file:
-      - ./hadoop/hadoop.env
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
-    networks:
-      - es-net
-
-  historyserver:
-    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
-    container_name: historyserver
-    hostname: historyserver
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864 resourcemanager:8088"
-    env_file:
-      - ./hadoop/hadoop.env
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.hostname == akswnc4.aksw.uni-leipzig.de
+      - 9042:9042
     volumes:
-      - ../storage/hadoop/hadoop_historyserver:/hadoop/yarn/timeline
+      - ../storage/cassandra:/var/lib/cassandra
     networks:
       - es-net
-
+  spark-master:
+    image: bde2020/spark-master:3.0.0-hadoop3.2
+    container_name: spark-master
+    depends_on:
+      - namenode
+      - datanode-1
+      - datanode-2
+      - datanode-3
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - INIT_DAEMON_STEP=setup_spark
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    networks:
+      - es-net
+  spark-worker:
+    image: bde2020/spark-worker:3.0.0-hadoop3.2
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    networks:
+      - es-net
 
 networks:
   es-net:
