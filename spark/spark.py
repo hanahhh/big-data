@@ -7,7 +7,7 @@ spark = SparkSession.builder\
             .config("spark.app.name", "CoinTradeDataAnalyzer")\
             .config("spark.master", "spark://spark-master:7077")\
             .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.12:3.2.0")\
-            .config("spark.cassandra.connection.host", "172.18.0.12")\
+            .config("spark.cassandra.connection.host", "172.20.0.9")\
             .config("spark.cassandra.auth.username", "cassandra")\
             .config("spark.cassandra.auth.password", "cassandra")\
             .enableHiveSupport()\
