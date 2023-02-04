@@ -86,7 +86,7 @@ services:
       - zookeeper-2
       - zookeeper-3
     ports:
-      - 29092:29092
+      - 49092:29092
     environment:
       - KAFKA_BROKER_ID=2
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181

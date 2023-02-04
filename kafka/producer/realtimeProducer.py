@@ -7,7 +7,7 @@ from vnstock import *
 from datetime import date, timedelta
 
 
-class StockProducer:
+class RealtimeStockProducer:
     def __init__(self):
         log_handler = RotatingFileHandler(
             f"{os.path.abspath(os.getcwd())}/kafka/producer/logs/producer.log",
@@ -17,18 +17,18 @@ class StockProducer:
             datefmt='%H:%M:%S',
             level=logging.DEBUG,
             handlers=[log_handler])
-        self.logger = logging.getLogger('producer')
+        self.logger = logging.getLogger('realtimeProducer')
 
         self.producer = KafkaProducer(
-            bootstrap_servers=['localhost:19092',
-                               'localhost:29092', 'localhost:39092'],
+            bootstrap_servers=['localhost:19092'],
             client_id='producer')
 
     def message_handler(self, message):
         #  Message from stock api
         try:
-            print(message)
-            self.producer.send('stockData', bytes(
+            print(
+                "___________________________________________________________________" + message)
+            self.producer.send('realtimeStockData', bytes(
                 message, encoding='utf-8'))
             self.producer.flush()
         except KafkaError as e:
@@ -39,17 +39,12 @@ class StockProducer:
 
     def crawl_from_binance(self, symbol_list):
         try:
-            self.logger.info("Start running stock producer...")
+            self.logger.info("Start running realtime stock producer...")
             for idx, symbol in enumerate(symbol_list):
-                start_date = (date.today() - timedelta(days=2)
-                              ).strftime("%Y-%m-%d")
-                end_date = (date.today() - timedelta(days=1)
-                            ).strftime("%Y-%m-%d")
-                print(symbol, start_date, end_date)
-                data = stock_historical_data(symbol=symbol,
-                                             start_date=start_date,
-                                             end_date=end_date)
-
+                print(symbol)
+                data = stock_intraday_data(symbol=symbol,
+                                           page_num=0,
+                                           page_size=1)
                 self.message_handler(data.to_json())
             while True:
                 pass
