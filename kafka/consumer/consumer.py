@@ -46,7 +46,7 @@ class StockConsumer:
 
     def recreate_tmpfile(self):
         tmp_file = tempfile.NamedTemporaryFile(mode='w+t', delete=False)
-        tmp_file.write('Symbol,Price,Quantity,Trade time\n')
+        tmp_file.write('Symbol, Open, High, Low, Close, Volume, Trading date\n')
         return tmp_file
 
     def run(self):

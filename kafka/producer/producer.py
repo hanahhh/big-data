@@ -24,12 +24,12 @@ class StockProducer:
                                'localhost:29092', 'localhost:39092'],
             client_id='producer')
 
-    def message_handler(self, message):
+    def message_handler(self, symbol, message):
         #  Message from stock api
         try:
-            print(message)
+            stock_info = f"{symbol},{message.Open.iloc[0]},{message.High.iloc[0]},{message.Low.iloc[0]},{message.Close.iloc[0]},{message.Volume.iloc[0]},{message.TradingDate.iloc[0]}"
             self.producer.send('stockData', bytes(
-                message, encoding='utf-8'))
+                stock_info, encoding='utf-8'))
             self.producer.flush()
         except KafkaError as e:
             self.logger.error(f"An Kafka error happened: {e}")
@@ -50,7 +50,7 @@ class StockProducer:
                                              start_date=start_date,
                                              end_date=end_date)
 
-                self.message_handler(data.to_json())
+                self.message_handler(symbol, data)
             while True:
                 pass
         except Exception as e:

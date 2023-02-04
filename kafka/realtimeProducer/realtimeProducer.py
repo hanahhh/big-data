@@ -23,13 +23,15 @@ class RealtimeStockProducer:
             bootstrap_servers=['localhost:19092'],
             client_id='producer')
 
-    def message_handler(self, message):
+    def message_handler(self, symbol, message):
         #  Message from stock api
         try:
+            stock_realtime_info = f"{symbol},{message.volume.iloc[0]},{message.cp.iloc[0]},{message.rcp.iloc[0]},{message.a.iloc[0]},{message.ba.iloc[0]},{message.sa.iloc[0]},{message.hl.iloc[0]},{message.pcp.iloc[0]},{message.time.iloc[0]}"
+
             print(
-                "___________________________________________________________________" + message)
+                "___________________________________________________________________" + symbol + stock_realtime_info)
             self.producer.send('realtimeStockData', bytes(
-                message, encoding='utf-8'))
+                stock_realtime_info, encoding='utf-8'))
             self.producer.flush()
         except KafkaError as e:
             self.logger.error(f"An Kafka error happened: {e}")
@@ -41,11 +43,10 @@ class RealtimeStockProducer:
         try:
             self.logger.info("Start running realtime stock producer...")
             for idx, symbol in enumerate(symbol_list):
-                print(symbol)
                 data = stock_intraday_data(symbol=symbol,
                                            page_num=0,
                                            page_size=1)
-                self.message_handler(data.to_json())
+                self.message_handler(symbol, data)
             while True:
                 pass
         except Exception as e:
