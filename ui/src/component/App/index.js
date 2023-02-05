@@ -11,38 +11,31 @@ import Home from "../Home";
 import "./styles.css";
 
 class App extends React.Component {
-    render() {
-        return (
-            <div className="app">
-                <Header />
-                <div className="app-body">
-                    <Switch>
-                        <Route
-                            exact
-                            path={routingPaths.home}
-                            component={Home}
-                        />
-                        <Route
+  render() {
+    return (
+      <div className="app">
+        <Header />
+        <div className="app-body">
+          <Switch>
+            <Route exact path={routingPaths.home} component={Overview} />
+            {/* <Route
                             path={routingPaths.overview}
                             component={Overview}
-                        />
-                        <Route
-                            path={routingPaths.topTrending}
-                            component={TopTrending}
-                        />
-                        <Route
-                            path={routingPaths.tweetSentiment}
-                            component={TweetSentiment}
-                        />
-                        <Route
-                            path={routingPaths.symbolCorrelation}
-                            component={SymbolCorrelation}
-                        />
-                    </Switch>
-                </div>
-            </div>
-        );
-    }
+                        /> */}
+            <Route path={routingPaths.topTrending} component={TopTrending} />
+            <Route
+              path={routingPaths.tweetSentiment}
+              component={TweetSentiment}
+            />
+            <Route
+              path={routingPaths.symbolCorrelation}
+              component={SymbolCorrelation}
+            />
+          </Switch>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withRouter(observer(App));
