@@ -1,10 +1,14 @@
 from cassandra.cluster import Cluster
 
-cluster = Cluster(['172.20.0.13'])
+<<<<<<< HEAD
+cluster = Cluster(['172.23.0.11'])
+=======
+cluster = Cluster(['172.20.0.11'])
+>>>>>>> 492de6cf7a3f39d0e58ad575f9349fd6dd6894ac
 session = cluster.connect()
 
-session.execute("CREATE KEYSPACE stock\
-    WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3}")
+# session.execute("CREATE KEYSPACE stock\
+#     WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1}")
 
 session.execute("USE stock")
 
