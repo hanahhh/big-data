@@ -65,8 +65,16 @@ class StockProducer:
             self.logger.error(f"An error happened while streaming: {e}")
 
     def run(self):
+        
         with open(os.path.abspath(os.getcwd()) + "/kafka/producer/symbol_list.csv") as f:
             symbol_list = f.read().split('\n')
+<<<<<<< HEAD
         while True: 
             self.crawl_from_binance(symbol_list)
             time.sleep(2)
+=======
+        while True:
+            self.crawl_from_binance(symbol_list)
+            print('s')
+            time.sleep(10)
+>>>>>>> 492de6cf7a3f39d0e58ad575f9349fd6dd6894ac
