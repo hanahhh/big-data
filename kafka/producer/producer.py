@@ -1,11 +1,13 @@
 import logging
+import pandas as pd 
+import requests
 from logging.handlers import RotatingFileHandler
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import os
-from vnstock import *
 from datetime import date, timedelta
-
+import time
+from pandas import json_normalize
 
 class StockProducer:
     def __init__(self):
@@ -27,7 +29,7 @@ class StockProducer:
     def message_handler(self, symbol, message):
         #  Message from stock api
         try:
-            stock_info = f"{symbol},{message.Open.iloc[0]},{message.High.iloc[0]},{message.Low.iloc[0]},{message.Close.iloc[0]},{message.Volume.iloc[0]},{message.TradingDate.iloc[0]}"
+            stock_info = f"{symbol},{message.Open.iloc[0]},{message.High.iloc[0]},{message.Low.iloc[0]},{message.Close.iloc[0]},{message.Volume.iloc[0]},{message.Tradingdate.iloc[0]}"
             self.producer.send('stockData', bytes(
                 stock_info, encoding='utf-8'))
             self.producer.flush()
@@ -36,20 +38,26 @@ class StockProducer:
         except Exception as e:
             self.logger.error(
                 f"An error happened while pushing message to Kafka: {e}")
+    def stock_historical_data(self, symbol, start_date, end_date):
+        fd = int(time.mktime(time.strptime(start_date, "%Y-%m-%d")))
+        td = int(time.mktime(time.strptime(end_date, "%Y-%m-%d")))
+        data = requests.get('https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/bars-long-term?ticker={}&type=stock&resolution=D&from={}&to={}'.format(symbol, fd, td)).json()
+        # print(data['data'])
+        df = json_normalize(data['data'])
+        df['stockCode'] = symbol
+        df.columns = df.columns.str.title()
+        return df
 
     def crawl_from_binance(self, symbol_list):
         try:
             self.logger.info("Start running stock producer...")
             for idx, symbol in enumerate(symbol_list):
-                start_date = (date.today() - timedelta(days=2)
+                start_date = (date.today() - timedelta(days=4)
                               ).strftime("%Y-%m-%d")
-                end_date = (date.today() - timedelta(days=1)
+                end_date = (date.today() - timedelta(days=3)
                             ).strftime("%Y-%m-%d")
                 print(symbol, start_date, end_date)
-                data = stock_historical_data(symbol=symbol,
-                                             start_date=start_date,
-                                             end_date=end_date)
-
+                data = self.stock_historical_data(symbol, start_date, end_date)
                 self.message_handler(symbol, data)
             while True:
                 pass

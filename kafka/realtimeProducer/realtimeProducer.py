@@ -28,8 +28,6 @@ class RealtimeStockProducer:
         try:
             stock_realtime_info = f"{symbol},{message.volume.iloc[0]},{message.cp.iloc[0]},{message.rcp.iloc[0]},{message.a.iloc[0]},{message.ba.iloc[0]},{message.sa.iloc[0]},{message.hl.iloc[0]},{message.pcp.iloc[0]},{message.time.iloc[0]}"
 
-            print(
-                "___________________________________________________________________" + symbol + stock_realtime_info)
             self.producer.send('realtimeStockData', bytes(
                 stock_realtime_info, encoding='utf-8'))
             self.producer.flush()

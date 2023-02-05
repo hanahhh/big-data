@@ -86,7 +86,7 @@ services:
       - zookeeper-2
       - zookeeper-3
     ports:
-      - 49092:29092
+      - 29092:29092
     environment:
       - KAFKA_BROKER_ID=2
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
@@ -133,7 +133,7 @@ services:
     ports:
       - 9870:9870
     environment:
-      - CLUSTER_NAME=coin_hub
+      - CLUSTER_NAME=stock
     env_file:
       - ./hadoop/hadoop.env
     deploy:

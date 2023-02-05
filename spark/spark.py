@@ -25,7 +25,7 @@ def map_time(df, frequency):
 df = spark.read.format('csv')\
     .option('header', True)\
     .option('inferSchema', True)\
-    .load("hdfs://namenode:9000/coinTradeData/2023/1/26/")
+    .load("hdfs://namenode:9000/coinTradeData/2023/2/5")
 print(df.head(10))
 
 # print("success", df.count())
