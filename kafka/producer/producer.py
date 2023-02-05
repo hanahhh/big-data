@@ -59,12 +59,14 @@ class StockProducer:
                 print(symbol, start_date, end_date)
                 data = self.stock_historical_data(symbol, start_date, end_date)
                 self.message_handler(symbol, data)
-            while True:
-                pass
+            # while True:
+            #     pass
         except Exception as e:
             self.logger.error(f"An error happened while streaming: {e}")
 
     def run(self):
         with open(os.path.abspath(os.getcwd()) + "/kafka/producer/symbol_list.csv") as f:
             symbol_list = f.read().split('\n')
-        self.crawl_from_binance(symbol_list)
+        while True: 
+            self.crawl_from_binance(symbol_list)
+            time.sleep(2)

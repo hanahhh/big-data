@@ -1,6 +1,6 @@
 from cassandra.cluster import Cluster
 
-cluster = Cluster(['172.20.0.13'])
+cluster = Cluster(['172.23.0.11'])
 session = cluster.connect()
 
 session.execute("CREATE KEYSPACE stock\

@@ -65,7 +65,7 @@ class StockConsumer:
                         print(true_msg)
                 # File size > 10mb flush to hdfs  max = 10485760
 
-                if tmp_file.tell() > 10000:
+                if tmp_file.tell() > 10485760:
                     print("xooo")
                     self.flush_to_hdfs(tmp_file.name)
                     tmp_file.close()
