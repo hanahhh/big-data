@@ -35,16 +35,17 @@
    ``` copy file spark.py to spark-master ```
    >
    > docker cp spark/spark.py spark-master:/home/
-   >
+   > docker cp spark/analyzer.py spark-master:/home/
    Access spark-master to run it
    >
    > docker exec -it spark-master bash
    >
-   >spark/bin/spark-submit --conf spark.cassandra.connection.host=172.20.0.10 --packages com.datastax.spark:spark-cassandra-connector_2.12:3.2.0 --conf spark.cassandra.auth.username=cassandra --conf spark.cassandra.auth.password=cassandra --master spark-master:7077 home/spark.py
-   >
+   >spark/bin/spark-submit --conf spark.cassandra.connection.host=172.23.0.10 --packages com.datastax.spark:spark-cassandra-connector_2.12:3.2.0 --conf spark.cassandra.auth.username=cassandra --conf spark.cassandra.auth.password=cassandra --master spark-master:7077 home/spark.py
+   > spark/bin/spark-submit --conf spark.cassandra.connection.host=172.23.0.10 --packages com.datastax.spark:spark-cassandra-connector_2.12:3.2.0 --conf spark.cassandra.auth.username=cassandra --conf spark.cassandra.auth.password=cassandra --master spark-master:7077 home/analyzer.py
+
+   > spark/bin/spark-submit home/analyzer.py
    
    !!! cassandra host, copy ip cassandra below
    >
    > docker network inspect big-data_es-net
    >
-   
