@@ -54,3 +54,7 @@
    >
    > docker network inspect big-data_es-net
    >
+   !!! kafka spark stream
+   >
+   > spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 --master local --class "org.myspark.KafkaStream" home/stream.py
+   >
