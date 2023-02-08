@@ -10,7 +10,7 @@ from datetime import date, timedelta
 class RealtimeStockProducer:
     def __init__(self):
         log_handler = RotatingFileHandler(
-            f"{os.path.abspath(os.getcwd())}/kafka/producer/logs/producer.log",
+            f"{os.path.abspath(os.getcwd())}/kafka/realtimeProducer/logs/producer.log",
             maxBytes=104857600, backupCount=10)
         logging.basicConfig(
             format='%(asctime)s,%(msecs)d <%(name)s>[%(levelname)s]: %(message)s',
@@ -27,7 +27,7 @@ class RealtimeStockProducer:
         #  Message from stock api
         try:
             stock_realtime_info = f"{symbol},{message.volume.iloc[0]},{message.cp.iloc[0]},{message.rcp.iloc[0]},{message.a.iloc[0]},{message.ba.iloc[0]},{message.sa.iloc[0]},{message.hl.iloc[0]},{message.pcp.iloc[0]},{message.time.iloc[0]}"
-
+            print(stock_realtime_info)
             self.producer.send('realtimeStockData', bytes(
                 stock_realtime_info, encoding='utf-8'))
             self.producer.flush()
