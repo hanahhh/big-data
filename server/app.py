@@ -3,7 +3,7 @@ from flask import Flask, abort, request
 from flask_cors import CORS
 from cassandra.cluster import Cluster
 
-cluster = Cluster(['172.20.0.11'])
+cluster = Cluster(['172.23.0.9'])
 session = cluster.connect('stock')
 
 app = Flask(__name__)
@@ -12,11 +12,11 @@ CORS(app)
 @app.route('/get_overview', methods=['GET'])
 def get_overview():
     # symbol_limit = request.args.get('symbol_limit') or 10
-    data = session.execute(f"select * from stock_data")
+    data = session.execute(f"select * from stock_data where symbol = 'SSI'")
     result = {'symbols': []}
     for a in data:
         result['symbols'].append(
-            {'symbol': a.symbol})
+            {'symbol': a})
     return result
 
 # @app.route('/get_overview', methods=['GET'])

@@ -1,5 +1,5 @@
 import logging
-import pandas as pd 
+import pandas as pd
 import requests
 from logging.handlers import RotatingFileHandler
 from kafka import KafkaProducer
@@ -8,6 +8,8 @@ import os
 from datetime import date, timedelta
 import time
 from pandas import json_normalize
+import schedule
+
 
 class StockProducer:
     def __init__(self):
@@ -38,17 +40,18 @@ class StockProducer:
         except Exception as e:
             self.logger.error(
                 f"An error happened while pushing message to Kafka: {e}")
+
     def stock_historical_data(self, symbol, start_date, end_date):
         fd = int(time.mktime(time.strptime(start_date, "%Y-%m-%d")))
         td = int(time.mktime(time.strptime(end_date, "%Y-%m-%d")))
-        data = requests.get('https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/bars-long-term?ticker={}&type=stock&resolution=D&from={}&to={}'.format(symbol, fd, td)).json()
-        # print(data['data'])
+        data = requests.get(
+            'https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/bars-long-term?ticker={}&type=stock&resolution=D&from={}&to={}'.format(symbol, fd, td)).json()
         df = json_normalize(data['data'])
         df['stockCode'] = symbol
         df.columns = df.columns.str.title()
         return df
 
-    def crawl_from_binance(self, symbol_list):
+    def crawl_from_tcbs(self, symbol_list):
         try:
             self.logger.info("Start running stock producer...")
             for idx, symbol in enumerate(symbol_list):
@@ -65,16 +68,9 @@ class StockProducer:
             self.logger.error(f"An error happened while streaming: {e}")
 
     def run(self):
-        
+
         with open(os.path.abspath(os.getcwd()) + "/kafka/producer/symbol_list.csv") as f:
             symbol_list = f.read().split('\n')
-<<<<<<< HEAD
-        while True: 
-            self.crawl_from_binance(symbol_list)
-            time.sleep(2)
-=======
         while True:
-            self.crawl_from_binance(symbol_list)
-            print('s')
+            schedule.run_pending()
             time.sleep(10)
->>>>>>> 492de6cf7a3f39d0e58ad575f9349fd6dd6894ac
