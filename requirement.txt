@@ -50,3 +50,4 @@ urllib3==1.26.10
 Werkzeug==2.2.0
 zope.interface==5.4.0
 vnstock==0.1.2
+schedule

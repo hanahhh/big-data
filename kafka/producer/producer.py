@@ -8,6 +8,7 @@ import os
 from datetime import date, timedelta
 import time
 from pandas import json_normalize
+import schedule
 
 class StockProducer:
     def __init__(self):
@@ -42,13 +43,12 @@ class StockProducer:
         fd = int(time.mktime(time.strptime(start_date, "%Y-%m-%d")))
         td = int(time.mktime(time.strptime(end_date, "%Y-%m-%d")))
         data = requests.get('https://apipubaws.tcbs.com.vn/stock-insight/v1/stock/bars-long-term?ticker={}&type=stock&resolution=D&from={}&to={}'.format(symbol, fd, td)).json()
-        # print(data['data'])
         df = json_normalize(data['data'])
         df['stockCode'] = symbol
         df.columns = df.columns.str.title()
         return df
 
-    def crawl_from_binance(self, symbol_list):
+    def crawl_from_tcbs(self, symbol_list):
         try:
             self.logger.info("Start running stock producer...")
             for idx, symbol in enumerate(symbol_list):
@@ -68,7 +68,7 @@ class StockProducer:
         
         with open(os.path.abspath(os.getcwd()) + "/kafka/producer/symbol_list.csv") as f:
             symbol_list = f.read().split('\n')
+        schedule.every().day.at("15:00").do(self.crawl_from_tcbs, symbol_list)
         while True:
-            self.crawl_from_binance(symbol_list)
-            print('s')
+            schedule.run_pending()
             time.sleep(10)

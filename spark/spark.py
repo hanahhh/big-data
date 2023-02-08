@@ -7,7 +7,7 @@ spark = SparkSession.builder\
             .config("spark.app.name", "StockDataAnalyzer")\
             .config("spark.master", "spark://spark-master:7077")\
             .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.12:3.2.0")\
-            .config("spark.cassandra.connection.host", "172.23.0.10")\
+            .config("spark.cassandra.connection.host", "172.23.0.12")\
             .config("spark.cassandra.auth.username", "cassandra")\
             .config("spark.cassandra.auth.password", "cassandra")\
             .enableHiveSupport()\
@@ -25,14 +25,14 @@ spark.sparkContext.setLogLevel("WARN")
 df = spark.read.format('csv')\
     .option('header', True)\
     .option('inferSchema', True)\
-    .load("hdfs://namenode:9000/stockData/2023/2/6/")
+    .load("hdfs://namenode:9000/stockData/2023/2/7/")
 print(df.head(10))
 
-# df = df.select(
-#     col('Symbol').alias('symbol'),
-#     col(' Trading date').alias('trading_date'),
-#     col(' High').alias('high'), col(' Low').alias('low'), col(' Open').alias('open'), col(' Close').alias('close'), col(' Volume').alias('volume')
-# )
+df = df.select(
+    col('Symbol').alias('symbol'),
+    col(' Trading date').alias('trading_date'),
+    col(' High').alias('high'), col(' Low').alias('low'), col(' Open').alias('open'), col(' Close').alias('close'), col(' Volume').alias('volume')
+)
 
 # result_df = df.select(['symbol', 'trading_date', sorted(df.columns[2:])])
 
