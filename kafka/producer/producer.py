@@ -30,10 +30,12 @@ class StockProducer:
     def message_handler(self, symbol, message):
         #  Message from stock api
         try:
-            stock_info = f"{symbol},{message.Open.iloc[0]},{message.High.iloc[0]},{message.Low.iloc[0]},{message.Close.iloc[0]},{message.Volume.iloc[0]},{message.Tradingdate.iloc[0]}"
-            self.producer.send('stockData', bytes(
-                stock_info, encoding='utf-8'))
-            self.producer.flush()
+            if not message.empty: 
+                stock_info = f"{symbol},{message.Open.iloc[0]},{message.High.iloc[0]},{message.Low.iloc[0]},{message.Close.iloc[0]},{message.Volume.iloc[0]},{message.Tradingdate.iloc[0]}"
+                print(symbol + "," + stock_info)
+                self.producer.send('stockData', bytes(
+                    stock_info, encoding='utf-8'))
+                self.producer.flush()
         except KafkaError as e:
             self.logger.error(f"An Kafka error happened: {e}")
         except Exception as e:
@@ -52,11 +54,10 @@ class StockProducer:
         try:
             self.logger.info("Start running stock producer...")
             for idx, symbol in enumerate(symbol_list):
-                start_date = (date.today() - timedelta(days=4)
+                start_date = (date.today() - timedelta(days=1)
                               ).strftime("%Y-%m-%d")
-                end_date = (date.today() - timedelta(days=3)
-                            ).strftime("%Y-%m-%d")
-                print(symbol, start_date, end_date)
+                end_date = (date.today()).strftime("%Y-%m-%d")
+                
                 data = self.stock_historical_data(symbol, start_date, end_date)
                 self.message_handler(symbol, data)
             # while True:
@@ -68,7 +69,7 @@ class StockProducer:
         
         with open(os.path.abspath(os.getcwd()) + "/kafka/producer/symbol_list.csv") as f:
             symbol_list = f.read().split('\n')
-        schedule.every().day.at("15:00").do(self.crawl_from_tcbs, symbol_list)
+        schedule.every().day.at("15:10").do(self.crawl_from_tcbs, symbol_list)
         while True:
             schedule.run_pending()
             time.sleep(10)

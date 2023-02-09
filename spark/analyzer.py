@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import date_trunc, from_unixtime, col, max, min, sum, first, last, lit, date_format, to_date
+from pyspark.sql.functions import to_date
 import sys
 
 # replace host cassandra !!! 
@@ -7,7 +7,7 @@ spark = SparkSession.builder\
             .config("spark.app.name", "StockAnalyzer")\
             .config("spark.master", "spark://spark-master:7077")\
             .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.12:3.2.0")\
-            .config("spark.cassandra.connection.host", "172.23.0.12")\
+            .config("spark.cassandra.connection.host", "172.23.0.11")\
             .config("spark.cassandra.auth.username", "cassandra")\
             .config("spark.cassandra.auth.password", "cassandra")\
             .enableHiveSupport()\

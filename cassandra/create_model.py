@@ -28,29 +28,4 @@ session.execute("CREATE TABLE predicted_price (\
    PRIMARY KEY (symbol)\
 )")
 
-# session.execute("CREATE TABLE tweet_trending (\
-#    symbol text,\
-#    recorded_time timestamp,\
-#    frequency text,\
-#    count int,\
-#    sentiment int,\
-#    PRIMARY KEY (symbol, recorded_time)\
-# ) WITH CLUSTERING ORDER BY (recorded_time DESC)")
-
-# session.execute("CREATE TABLE stream_tweet_trending (\
-#    symbol text,\
-#    recorded_time timestamp,\
-#    frequency text,\
-#    count int,\
-#    sentiment int,\
-#    PRIMARY KEY (symbol, recorded_time)\
-# ) WITH CLUSTERING ORDER BY (recorded_time DESC)")
-
-# session.execute("CREATE TABLE recent_tweet (\
-#    symbol text,\
-#    recorded_time timestamp,\
-#    content text,\
-#    PRIMARY KEY (symbol, recorded_time)\
-# ) WITH CLUSTERING ORDER BY (recorded_time DESC)")
-
 session.shutdown()
