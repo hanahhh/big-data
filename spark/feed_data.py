@@ -1,6 +1,5 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
-import sys
 
 
 # replace host cassandra !!! 
@@ -18,13 +17,13 @@ spark.sparkContext.setLogLevel("WARN")
 df = spark.read.format('csv')\
     .option('header', True)\
     .option('inferSchema', True)\
-    .load("hdfs://namenode:9000/stockData/"+sys.argv[1])
+    .load("hdfs://namenode:9000/stockData/2023/0/out.csv")
 print(df.head(10))
 
 df = df.select(
-    col('Symbol').alias('symbol'),
-    col(' Trading date').alias('trading_date'),
-    col(' High').alias('high'), col(' Low').alias('low'), col(' Open').alias('open'), col(' Close').alias('close'), col(' Volume').alias('volume')
+    col('Stockcode').alias('symbol'),
+    col('Tradingdate').alias('trading_date'),
+    col('High').alias('high'), col('Low').alias('low'), col('Open').alias('open'), col('Close').alias('close'), col('Volume').alias('volume')
 )
 
 # save data into cassandra
