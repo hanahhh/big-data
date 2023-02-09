@@ -4,7 +4,10 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import os
 from vnstock import *
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+import requests
+import pandas
+from pandas import json_normalize
 
 
 class RealtimeStockProducer:
@@ -23,14 +26,24 @@ class RealtimeStockProducer:
             bootstrap_servers=['localhost:19092'],
             client_id='producer')
 
+    def stock_intraday_data (self, symbol, page_num, page_size):
+        d = datetime.now()
+        if d.weekday() > 4: #today is weekend
+            data = requests.get('https://apipubaws.tcbs.com.vn/stock-insight/v1/intraday/{}/his/paging?page={}&size={}&headIndex=-1'.format(symbol, page_num, page_size)).json()
+        else: #today is weekday
+            data = requests.get('https://apipubaws.tcbs.com.vn/stock-insight/v1/intraday/{}/his/paging?page={}&size={}'.format(symbol, page_num, page_size)).json()
+        df = json_normalize(data['data'])
+        return df
+
     def message_handler(self, symbol, message):
         #  Message from stock api
         try:
-            stock_realtime_info = f"{symbol},{message.volume.iloc[0]},{message.cp.iloc[0]},{message.rcp.iloc[0]},{message.a.iloc[0]},{message.ba.iloc[0]},{message.sa.iloc[0]},{message.hl.iloc[0]},{message.pcp.iloc[0]},{message.time.iloc[0]}"
-            print(stock_realtime_info)
-            self.producer.send('realtimeStockData', bytes(
-                stock_realtime_info, encoding='utf-8'))
-            self.producer.flush()
+            if not message.empty:
+                stock_realtime_info = f"{symbol},{message.p.iloc[0]},{message.v.iloc[0]},{message.cp.iloc[0]},{message.rcp.iloc[0]},{message.ba.iloc[0]},{message.sa.iloc[0]},{message.hl.iloc[0]},{message.pcp.iloc[0]},{message.t.iloc[0]}"
+                print(stock_realtime_info)
+                self.producer.send('realtimeStockData', bytes(
+                    stock_realtime_info, encoding='utf-8'))
+                self.producer.flush()
         except KafkaError as e:
             self.logger.error(f"An Kafka error happened: {e}")
         except Exception as e:
@@ -41,7 +54,7 @@ class RealtimeStockProducer:
         try:
             self.logger.info("Start running realtime stock producer...")
             for idx, symbol in enumerate(symbol_list):
-                data = stock_intraday_data(symbol=symbol,
+                data = self.stock_intraday_data(symbol=symbol,
                                            page_num=0,
                                            page_size=1)
                 self.message_handler(symbol, data)
